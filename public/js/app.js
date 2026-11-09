@@ -169,6 +169,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // Render Single Comment HTML
+  window.renderCommentHTML = function(c, postId) {
+    const isOwner = user && user.id === c.user_id;
+
+    return `
+      <div class="comment-item" id="comment-${c.id}">
+        <a href="/profile.html?u=${c.username}">
+          <img src="${c.avatar}" alt="${c.username}">
+        </a>
+        <div class="comment-bubble">
+          <div class="comment-header">
+            <a href="/profile.html?u=${c.username}"><strong>${c.name}</strong></a>
+            <span class="comment-time">${timeAgo(c.created_at)}</span>
+            ${isOwner ? `
+              <button class="btn-icon btn-comment-del" onclick="deleteComment(${c.id}, ${postId})" title="Delete Comment">
+                <i class="fas fa-trash"></i>
+              </button>
+            ` : ''}
+          </div>
+          <p>${escapeHTML(c.content)}</p>
+          <div class="comment-actions">
+            <button class="comment-like-btn ${c.is_liked ? 'liked' : ''}" id="comment-like-btn-${c.id}" onclick="toggleCommentLike(${c.id})">
+              <i class="${c.is_liked ? 'fas' : 'far'} fa-heart"></i>
+              <span id="comment-like-count-${c.id}">${c.likes_count || 0}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  };
+
   // Toggle Comments & Load
   window.toggleComments = async function(postId) {
     const section = document.getElementById(`comments-section-${postId}`);
@@ -182,18 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (res.comments.length === 0) {
           list.innerHTML = '<div style="font-size:0.85rem; color:#64748b; padding:4px 0;">No comments yet. Write the first one!</div>';
         } else {
-          list.innerHTML = res.comments.map(c => `
-            <div class="comment-item">
-              <a href="/profile.html?u=${c.username}">
-                <img src="${c.avatar}" alt="${c.username}">
-              </a>
-              <div class="comment-bubble">
-                <a href="/profile.html?u=${c.username}"><strong>${c.name}</strong></a>
-                <span style="font-size:0.75rem; color:#94a3b8; margin-left:6px;">${timeAgo(c.created_at)}</span>
-                <p>${escapeHTML(c.content)}</p>
-              </div>
-            </div>
-          `).join('');
+          list.innerHTML = res.comments.map(c => renderCommentHTML(c, postId)).join('');
         }
       } catch (err) {
         list.innerHTML = `<div style="color:#ef4444;">Failed to load comments</div>`;
@@ -225,24 +245,57 @@ document.addEventListener('DOMContentLoaded', () => {
       const countEl = document.getElementById(`comment-count-${postId}`);
       countEl.textContent = res.commentsCount;
 
-      const newCommentHTML = `
-        <div class="comment-item">
-          <a href="/profile.html?u=${res.comment.username}">
-            <img src="${res.comment.avatar}" alt="${res.comment.username}">
-          </a>
-          <div class="comment-bubble">
-            <a href="/profile.html?u=${res.comment.username}"><strong>${res.comment.name}</strong></a>
-            <span style="font-size:0.75rem; color:#94a3b8; margin-left:6px;">just now</span>
-            <p>${escapeHTML(res.comment.content)}</p>
-          </div>
-        </div>
-      `;
+      const newCommentHTML = renderCommentHTML(res.comment, postId);
 
       if (list.innerHTML.includes('No comments yet')) {
         list.innerHTML = newCommentHTML;
       } else {
         list.insertAdjacentHTML('beforeend', newCommentHTML);
       }
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  };
+
+  // Toggle Comment Like
+  window.toggleCommentLike = async function(commentId) {
+    if (!getToken()) {
+      showToast('Please log in to like comments', 'error');
+      return;
+    }
+
+    try {
+      const res = await api(`/api/posts/comments/${commentId}/like`, { method: 'POST' });
+      const btn = document.getElementById(`comment-like-btn-${commentId}`);
+      const count = document.getElementById(`comment-like-count-${commentId}`);
+      const icon = btn.querySelector('i');
+
+      if (res.isLiked) {
+        btn.classList.add('liked');
+        icon.className = 'fas fa-heart';
+      } else {
+        btn.classList.remove('liked');
+        icon.className = 'far fa-heart';
+      }
+      count.textContent = res.likesCount;
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  };
+
+  // Delete Comment
+  window.deleteComment = async function(commentId, postId) {
+    if (!confirm('Are you sure you want to delete this comment?')) return;
+
+    try {
+      const res = await api(`/api/posts/comments/${commentId}`, { method: 'DELETE' });
+      const el = document.getElementById(`comment-${commentId}`);
+      if (el) el.remove();
+
+      const countEl = document.getElementById(`comment-count-${postId}`);
+      if (countEl) countEl.textContent = res.commentsCount;
+
+      showToast('Comment deleted', 'info');
     } catch (err) {
       showToast(err.message, 'error');
     }
