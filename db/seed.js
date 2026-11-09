@@ -15,7 +15,7 @@ function seedDB() {
 
   // Seed Users
   const users = [
-    ['sathwik', 'Sathwik Kumar', 'sathwik@example.com', hashPassword('demo123'), 'Full Stack Developer & Tech Enthusiast 💻 Exploring the frontiers of web dev!', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200'],
+    ['alex_dev', 'Alex Morgan', 'alex@example.com', hashPassword('demo123'), 'Full Stack Developer & Tech Enthusiast 💻 Exploring the frontiers of web dev!', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200'],
     ['ananya_dev', 'Ananya Sharma', 'ananya@example.com', hashPassword('demo123'), 'Frontend artisan | React & UI/UX lover 🎨 Coffee over everything ☕', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200'],
     ['rahul_tech', 'Rahul Verma', 'rahul@example.com', hashPassword('demo123'), 'Building open source projects 🚀 AI & Cloud engineering.', 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=200'],
     ['priya_codes', 'Priya Patel', 'priya@example.com', hashPassword('demo123'), 'Software Engineer @ Bengaluru. Bookworm 📚 & traveler ✈️', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200']
@@ -26,44 +26,48 @@ function seedDB() {
     VALUES (?, ?, ?, ?, ?, ?)
   `);
 
-  users.forEach(u => insertUser.run(...u));
+  const userIds = [];
+  users.forEach(u => {
+    const res = insertUser.run(...u);
+    userIds.push(res.lastInsertRowid);
+  });
 
   // Seed Follows
   const insertFollow = db.prepare('INSERT INTO follows (follower_id, following_id) VALUES (?, ?)');
-  insertFollow.run(1, 2); // sathwik follows ananya
-  insertFollow.run(1, 3); // sathwik follows rahul
-  insertFollow.run(2, 1); // ananya follows sathwik
-  insertFollow.run(3, 1); // rahul follows sathwik
-  insertFollow.run(4, 1); // priya follows sathwik
-  insertFollow.run(4, 2); // priya follows ananya
+  insertFollow.run(userIds[0], userIds[1]); // alex follows ananya
+  insertFollow.run(userIds[0], userIds[2]); // alex follows rahul
+  insertFollow.run(userIds[1], userIds[0]); // ananya follows alex
+  insertFollow.run(userIds[2], userIds[0]); // rahul follows alex
+  insertFollow.run(userIds[3], userIds[0]); // priya follows alex
+  insertFollow.run(userIds[3], userIds[1]); // priya follows ananya
 
   // Seed Posts
   const insertPost = db.prepare('INSERT INTO posts (user_id, content, image) VALUES (?, ?, ?)');
-  const p1 = insertPost.run(1, 'Super excited to start working on the CodeAlpha internship tasks! Full stack web development is truly thrilling when you build both client and server from scratch. 🔥🚀', 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800');
-  const p2 = insertPost.run(2, 'Sunday workspace vibes ✨ Keep coding, stay inspired, and never stop learning new frameworks.', 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800');
-  const p3 = insertPost.run(3, 'Just deployed a new microservice! SQLite + Express makes prototyping lightning fast ⚡ What is your go-to lightweight stack?', '');
-  const p4 = insertPost.run(4, 'Morning view from the tech summit today in Bengaluru! Great conversations on the future of generative UI and developer tooling. 🌇', 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800');
+  const p1 = insertPost.run(userIds[0], 'Super excited to start working on the CodeAlpha internship tasks! Full stack web development is truly thrilling when you build both client and server from scratch. 🔥🚀', 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800');
+  const p2 = insertPost.run(userIds[1], 'Sunday workspace vibes ✨ Keep coding, stay inspired, and never stop learning new frameworks.', 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800');
+  const p3 = insertPost.run(userIds[2], 'Just deployed a new microservice! SQLite + Express makes prototyping lightning fast ⚡ What is your go-to lightweight stack?', '');
+  const p4 = insertPost.run(userIds[3], 'Morning view from the tech summit today in Bengaluru! Great conversations on the future of generative UI and developer tooling. 🌇', 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800');
 
   // Seed Comments
   const insertComment = db.prepare('INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)');
-  insertComment.run(p1.lastInsertRowid, 2, 'All the best Sathwik! You got this! 💪');
-  insertComment.run(p1.lastInsertRowid, 3, 'Great job! Keep us posted with your progress.');
-  insertComment.run(p2.lastInsertRowid, 1, 'Love the setup aesthetics Ananya! ✨');
-  insertComment.run(p3.lastInsertRowid, 1, 'Totally agree, SQLite + Node is a beast for prototypes!');
+  insertComment.run(p1.lastInsertRowid, userIds[1], 'All the best Alex! You got this! 💪');
+  insertComment.run(p1.lastInsertRowid, userIds[2], 'Great job! Keep us posted with your progress.');
+  insertComment.run(p2.lastInsertRowid, userIds[0], 'Love the setup aesthetics Ananya! ✨');
+  insertComment.run(p3.lastInsertRowid, userIds[0], 'Totally agree, SQLite + Node is a beast for prototypes!');
 
   // Seed Likes
   const insertLike = db.prepare('INSERT INTO likes (post_id, user_id) VALUES (?, ?)');
-  insertLike.run(p1.lastInsertRowid, 2);
-  insertLike.run(p1.lastInsertRowid, 3);
-  insertLike.run(p1.lastInsertRowid, 4);
-  insertLike.run(p2.lastInsertRowid, 1);
-  insertLike.run(p2.lastInsertRowid, 3);
-  insertLike.run(p3.lastInsertRowid, 1);
-  insertLike.run(p4.lastInsertRowid, 1);
-  insertLike.run(p4.lastInsertRowid, 2);
+  insertLike.run(p1.lastInsertRowid, userIds[1]);
+  insertLike.run(p1.lastInsertRowid, userIds[2]);
+  insertLike.run(p1.lastInsertRowid, userIds[3]);
+  insertLike.run(p2.lastInsertRowid, userIds[0]);
+  insertLike.run(p2.lastInsertRowid, userIds[2]);
+  insertLike.run(p3.lastInsertRowid, userIds[0]);
+  insertLike.run(p4.lastInsertRowid, userIds[0]);
+  insertLike.run(p4.lastInsertRowid, userIds[1]);
 
   console.log('✅ Database seeded with users, posts, comments, likes, and follows!');
-  console.log('   Demo login: sathwik@example.com / demo123 (or ananya@example.com / demo123)');
+  console.log('   Demo login: alex@example.com / demo123 (or ananya@example.com / demo123)');
 }
 
 seedDB();

@@ -47,7 +47,7 @@ A full-stack social media application built for the **CodeAlpha Full Stack Devel
 ## 🔑 Demo Accounts
 
 You can test with these pre-seeded accounts:
-- **Username / Email:** `sathwik` or `sathwik@example.com` | **Password:** `demo123`
+- **Username / Email:** `alex_dev` or `alex@example.com` | **Password:** `demo123`
 - **Username / Email:** `ananya_dev` or `ananya@example.com` | **Password:** `demo123`
 - Or click **Sign Up** to create your own brand new creator profile!
 
