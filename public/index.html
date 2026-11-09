@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulse — Social Media Platform</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="/" class="brand">
+        <i class="fas fa-bolt"></i> Pulse
+      </a>
+
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="userSearchInput" placeholder="Search creators...">
+        <div class="search-dropdown" id="searchDropdown"></div>
+      </div>
+
+      <div class="nav-actions">
+        <a href="/" class="nav-link active"><i class="fas fa-home"></i> <span>Feed</span></a>
+        
+        <div id="authLinks" class="auth-links">
+          <a href="/login.html" class="btn btn-outline">Log In</a>
+          <a href="/register.html" class="btn btn-primary">Sign Up</a>
+        </div>
+
+        <div id="userMenu" class="user-menu hidden">
+          <a href="#" id="myProfileLink" class="user-chip">
+            <img id="navAvatar" src="" alt="avatar">
+            <span id="navUsername">User</span>
+          </a>
+          <button id="logoutBtn" class="btn-icon" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <main class="main-layout">
+    <!-- Left Sidebar -->
+    <aside class="sidebar-left">
+      <div class="sidebar-card user-mini-card" id="miniProfileCard">
+        <div class="mini-profile-loading">Log in to view your profile & stats.</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/" class="sidebar-link active"><i class="fas fa-stream"></i> Global Feed</a>
+        <a href="#" id="profileSidebarLink" class="sidebar-link"><i class="fas fa-user-circle"></i> My Profile</a>
+        <a href="/login.html" id="loginSidebarLink" class="sidebar-link"><i class="fas fa-sign-in-alt"></i> Switch / Login</a>
+      </nav>
+    </aside>
+
+    <!-- Center Feed -->
+    <section class="feed-section">
+      <!-- Create Post Box -->
+      <div class="create-post-card" id="createPostCard">
+        <div class="create-post-top">
+          <img id="createPostAvatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="avatar">
+          <textarea id="postContent" placeholder="What's happening? Share a thought or update..." rows="3"></textarea>
+        </div>
+        <div class="image-preview-container hidden" id="imagePreviewContainer">
+          <img id="imagePreview" src="" alt="preview">
+          <button type="button" id="removeImageBtn"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="create-post-bottom">
+          <div class="post-tools">
+            <button type="button" class="tool-btn" id="addImageUrlBtn" title="Attach Image URL">
+              <i class="fas fa-image"></i> Add Image URL
+            </button>
+          </div>
+          <button class="btn btn-primary" id="publishPostBtn">
+            <i class="fas fa-paper-plane"></i> Post
+          </button>
+        </div>
+        <!-- URL Input Prompt -->
+        <div class="url-input-bar hidden" id="urlInputBar">
+          <input type="url" id="imageUrlInput" placeholder="Paste image link (e.g. https://...)...">
+          <button class="btn btn-sm btn-primary" id="applyImageUrlBtn">Apply</button>
+          <button class="btn btn-sm btn-outline" id="cancelImageUrlBtn">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Feed Filter/Header -->
+      <div class="feed-header">
+        <h2>Latest Updates</h2>
+        <button class="btn-icon" id="refreshFeedBtn" title="Refresh Feed"><i class="fas fa-sync-alt"></i></button>
+      </div>
+
+      <!-- Posts Stream Container -->
+      <div class="posts-stream" id="postsStream">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i> Loading posts...
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Sidebar (Suggested People) -->
+    <aside class="sidebar-right">
+      <div class="sidebar-card">
+        <h3>Who to follow</h3>
+        <div class="suggested-users" id="suggestedUsers">
+          <div class="loading-mini">Loading creators...</div>
+        </div>
+      </div>
+
+      <div class="footer-mini">
+        <p>© 2026 Pulse — CodeAlpha Task 2</p>
+        <p>Built with Node.js, Express & SQLite</p>
+      </div>
+    </aside>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

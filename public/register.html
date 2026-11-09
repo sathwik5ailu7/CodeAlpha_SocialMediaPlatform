@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — Pulse</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="auth-body">
+  <div class="auth-box">
+    <div class="auth-header">
+      <a href="/" class="brand"><i class="fas fa-bolt"></i> Pulse</a>
+      <h2>Create Account</h2>
+      <p>Join the Pulse creator community</p>
+    </div>
+
+    <form id="registerForm" class="auth-form">
+      <div class="form-group">
+        <label><i class="fas fa-at"></i> Username</label>
+        <input type="text" id="regUsername" placeholder="e.g. sathwik_coder" required>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-user"></i> Full Name</label>
+        <input type="text" id="regName" placeholder="e.g. Sathwik Kumar" required>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-envelope"></i> Email</label>
+        <input type="email" id="regEmail" placeholder="e.g. sathwik@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <input type="password" id="regPassword" placeholder="Minimum 6 characters" minlength="6" required>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-pen"></i> Bio (optional)</label>
+        <textarea id="regBio" rows="2" placeholder="Tell everyone what you do..."></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" id="regBtn">Create Account</button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a href="/login.html">Log In</a></p>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="/js/utils.js"></script>
+  <script>
+    if (getToken()) window.location.href = '/';
+
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('regBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+
+      try {
+        const res = await api('/api/auth/register', {
+          method: 'POST',
+          body: JSON.stringify({
+            username: document.getElementById('regUsername').value.trim(),
+            name: document.getElementById('regName').value.trim(),
+            email: document.getElementById('regEmail').value.trim(),
+            password: document.getElementById('regPassword').value,
+            bio: document.getElementById('regBio').value.trim()
+          })
+        });
+
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('user', JSON.stringify(res.user));
+        showToast('Account created! Welcome to Pulse 🎉', 'success');
+        setTimeout(() => window.location.href = '/', 800);
+      } catch (err) {
+        showToast(err.message || 'Registration failed', 'error');
+        btn.disabled = false;
+        btn.innerHTML = 'Create Account';
+      }
+    });
+  </script>
+</body>
+</html>

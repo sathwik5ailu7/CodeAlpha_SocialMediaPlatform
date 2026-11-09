@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile — Pulse</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="/" class="brand">
+        <i class="fas fa-bolt"></i> Pulse
+      </a>
+
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="userSearchInput" placeholder="Search creators...">
+        <div class="search-dropdown" id="searchDropdown"></div>
+      </div>
+
+      <div class="nav-actions">
+        <a href="/" class="nav-link"><i class="fas fa-home"></i> <span>Feed</span></a>
+        
+        <div id="authLinks" class="auth-links">
+          <a href="/login.html" class="btn btn-outline">Log In</a>
+          <a href="/register.html" class="btn btn-primary">Sign Up</a>
+        </div>
+
+        <div id="userMenu" class="user-menu hidden">
+          <a href="#" id="myProfileLink" class="user-chip">
+            <img id="navAvatar" src="" alt="avatar">
+            <span id="navUsername">User</span>
+          </a>
+          <button id="logoutBtn" class="btn-icon" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="profile-layout">
+    <div class="profile-container">
+      <!-- Profile Header Banner & Info -->
+      <div class="profile-banner-card" id="profileHeaderCard">
+        <div class="profile-cover"></div>
+        <div class="profile-details">
+          <div class="avatar-wrapper">
+            <img id="profileAvatar" src="" alt="Profile Avatar">
+          </div>
+          <div class="profile-action-btn-box" id="profileActionContainer">
+            <!-- Edit or Follow button injected by JS -->
+          </div>
+          <div class="profile-text">
+            <h1 id="profileFullName">Loading...</h1>
+            <p class="profile-handle" id="profileHandle">@loading</p>
+            <p class="profile-bio" id="profileBio">No bio added yet.</p>
+            <div class="profile-stats">
+              <div class="stat"><strong id="statPosts">0</strong> <span>Posts</span></div>
+              <div class="stat"><strong id="statFollowers">0</strong> <span>Followers</span></div>
+              <div class="stat"><strong id="statFollowing">0</strong> <span>Following</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Profile Modal -->
+      <div class="modal-backdrop hidden" id="editProfileModal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3>Edit Profile</h3>
+            <button class="btn-close" id="closeEditModalBtn"><i class="fas fa-times"></i></button>
+          </div>
+          <form id="editProfileForm" class="modal-body">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="editNameInput" required>
+            </div>
+            <div class="form-group">
+              <label>Bio</label>
+              <textarea id="editBioInput" rows="3" placeholder="Tell the community about yourself..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Avatar Image URL</label>
+              <input type="url" id="editAvatarInput" placeholder="https://...">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- User's Posts Feed -->
+      <div class="profile-posts-section">
+        <h2 class="subheading">Posts</h2>
+        <div class="posts-stream" id="userPostsStream">
+          <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading user's posts...</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/profile.js"></script>
+</body>
+</html>

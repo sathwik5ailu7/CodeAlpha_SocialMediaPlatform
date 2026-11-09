@@ -1,0 +1,28 @@
+{
+  "name": "codealpha-social-media-platform",
+  "version": "1.0.0",
+  "description": "A full-stack social media mini-platform built with Express.js, SQLite, and vanilla HTML/CSS/JS - CodeAlpha Internship Task 2",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "seed": "node db/seed.js"
+  },
+  "keywords": [
+    "social-media",
+    "express",
+    "sqlite",
+    "fullstack",
+    "codealpha"
+  ],
+  "author": "CodeAlpha Intern",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.10.0",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.3",
+    "jsonwebtoken": "^9.0.3"
+  }
+}
